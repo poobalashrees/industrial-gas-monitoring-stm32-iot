@@ -221,9 +221,22 @@ The current system is a **single-node prototype**. It can be extended into a rea
 
 ---
 
-## 📸 Screenshots (Add Here)
+## 📸 Screenshots
 
-* SCADA Dashboard
-* React Dashboard
-* Digital Twin View
-* Hardware Setup
+### 🖥️ SCADA Dashboard
+![SCADA](docs/screenshots/scada.png)
+
+---
+
+### 🌐 React Dashboard
+![React Dashboard](docs/screenshots/react-dashboard.png)
+
+---
+
+### 🧠 Digital Twin
+![Digital Twin](docs/screenshots/digital-twin.png)
+
+---
+
+### 🔧 Hardware Setup
+![Hardware](docs/screenshots/hardware.jpg)
