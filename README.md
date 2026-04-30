@@ -2,13 +2,26 @@
 
 ## 📌 Overview
 
-This project is a **full-stack industrial safety system** designed to monitor gas pipelines in real-time using an STM32 microcontroller. It integrates multiple sensors, intelligent fault detection, a live SCADA dashboard, and a 3D digital twin for visualization.
+A full-stack industrial safety system for real-time monitoring of gas pipelines using **STM32**, **Flask**, and a **SCADA + 3D Digital Twin interface**.
 
-The system is built to detect and classify hazardous conditions such as gas leaks, abnormal pressure, flow irregularities, and mechanical vibrations with a priority-based alert mechanism.
+The current implementation demonstrates a **single-node monitoring system**, capable of detecting and classifying hazardous conditions such as:
+
+* Gas leaks
+* Pressure anomalies
+* Flow irregularities
+* Mechanical vibrations
+
+The system integrates **embedded sensing + backend processing + real-time visualization**, with a clear roadmap to scale into a distributed industrial pipeline network.
 
 ---
 
-## ⚙️ Key Features
+## 🧱 System Architecture (Current System)
+
+STM32 → Serial (UART) → Flask Backend → WebSocket → Frontend (SCADA + React + Digital Twin)
+
+---
+
+## ⚙️ Features
 
 ### 🔹 Embedded System (STM32)
 
@@ -19,70 +32,58 @@ The system is built to detect and classify hazardous conditions such as gas leak
   * Flow Sensor
   * DHT11 Temperature Sensor
   * Vibration Sensor
-* 4-Level Priority Alarm System:
-
-  * NORMAL
-  * WARNING
-  * CRITICAL
-  * EMERGENCY
-* Hysteresis-based thresholding to avoid false triggers
-* Non-blocking buzzer patterns for different alert levels
-* Auto-calibration of gas sensor using interrupt (push button)
+* Priority-based 4-level alert system
+* Hysteresis thresholding (reduces false alarms)
+* Auto-calibration for gas sensor
+* Non-blocking buzzer alert patterns
 
 ---
 
-### 🔹 Backend (Flask + Python)
+### 🔹 Backend (Flask)
 
-* Real-time data acquisition via serial communication
-* REST API + WebSocket (Socket.IO) support
-* AI-based anomaly prediction (trained using sensor logs)
-* Automatic Excel logging using Pandas & OpenPyXL
-
----
-
-### 🔹 Frontend (React + SCADA Dashboard)
-
-* Live sensor data visualization
-* Real-time charts and alert indicators
-* SCADA-style industrial UI
-* WebSocket-based instant updates
+* Serial data acquisition from STM32
+* Real-time WebSocket communication (Socket.IO)
+* AI-based anomaly prediction
+* Excel logging using Pandas & OpenPyXL
 
 ---
 
-### 🔹 3D Digital Twin
+### 🔹 Frontend
 
-* Built using React Three Fiber / Three.js
-* Real-time visualization of pipeline conditions
-* Dynamic animations based on sensor data
+#### 🖥️ SCADA Dashboard
 
----
+* `pipeline.html`
+* Lightweight monitoring interface
+* Real-time sensor visualization
 
-## 🧱 System Architecture
+#### 🌐 React Dashboard + Digital Twin
 
-```text
-STM32 → Serial → Flask Backend → WebSocket → React Dashboard + Digital Twin
-```
+* Live charts and alerts
+* 3D pipeline visualization using Three.js
+* Real-time system state mapping
 
 ---
 
 ## 📁 Project Structure
 
-```text
+```
 industrial-gas-monitoring-stm32-iot/
 │
-├── firmware/        # STM32 Embedded C code
-├── backend/         # Flask server + AI + logging
-├── frontend/        # React dashboard + digital twin
-├── docs/            # diagrams, pipeline.html
-├── data-logs/       # sensor logs (Excel/CSV)
+├── firmware/              # STM32 Embedded C code
+├── backend/               # Flask server + AI + logging
+├── frontend/
+│   ├── scada/             # pipeline.html (SCADA)
+│   ├── react-dashboard/   # React + Digital Twin
+│
+├── data-logs/             # Excel logs
 └── README.md
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 How to Run the Full System
 
-### 🔹 Backend Setup
+### 🔹 1. Run Backend
 
 ```bash
 cd backend
@@ -90,32 +91,60 @@ pip install -r requirements.txt
 python server.py
 ```
 
+✔ Ensure:
+
+* STM32 is connected via USB
+* Correct COM port is set in `server.py`
+
 ---
 
-### 🔹 Frontend Setup
+### 🔹 2. Run React Dashboard
 
 ```bash
-cd frontend
+cd frontend/react-dashboard
 npm install
 npm start
 ```
 
+👉 Opens at: http://localhost:3000
+
 ---
 
-### 🔹 Firmware
+### 🔹 3. Open SCADA Dashboard
 
-* Open STM32 project in STM32CubeIDE
-* Flash code to STM32F446RE board
+Open directly in browser:
+
+```
+frontend/scada/pipeline.html
+```
+
+---
+
+### 🔹 4. Run Firmware
+
+* Open project in STM32CubeIDE
+* Flash to STM32F446RE
+* Ensure UART configuration matches backend
+
+---
+
+## 🔄 Data Flow
+
+1. STM32 reads sensor values
+2. Sends data via UART → Flask backend
+3. Backend processes & logs data
+4. Sends updates via WebSocket
+5. Frontend updates in real-time
 
 ---
 
 ## 📊 Technologies Used
 
 * **Embedded:** STM32, Embedded C
-* **Backend:** Flask, Socket.IO, Pandas, OpenPyXL
-* **Frontend:** React.js
-* **3D Visualization:** Three.js, React Three Fiber
-* **AI/ML:** Python (Joblib models)
+* **Backend:** Flask, Socket.IO, Pandas
+* **Frontend:** HTML, React.js
+* **3D Visualization:** Three.js / React Three Fiber
+* **AI/ML:** Python (Joblib)
 
 ---
 
@@ -128,29 +157,73 @@ npm start
 
 ---
 
-## 📸 Screenshots (Add Yours)
+## 🔮 Future Improvements (Scalable Pipeline Network)
 
-* Dashboard UI
+The current system is a **single-node prototype**. It can be extended into a real-world large-scale deployment as follows:
+
+### 🌐 Distributed Node Architecture
+
+* Divide pipelines into **multiple nodes (2–5 km coverage each)**
+* Each node acts as an independent monitoring unit
+
+---
+
+### 📡 LoRa-Based Communication
+
+* Use **LoRa modules** for long-range communication
+* Node → Substation → Central Control architecture
+
+---
+
+### 📍 GPS-Based Fault Detection
+
+* Add GPS module to each node
+* Enables **exact fault location tracking**
+
+---
+
+### 🔒 Automated Safety System
+
+* Integrate **solenoid valves**
+* Automatic gas shutoff during critical conditions
+
+---
+
+### 🧠 Edge AI at Node Level
+
+* Deploy lightweight ML models on STM32
+* Perform **local anomaly detection**
+* Faster response without relying on server
+
+---
+
+### ☁️ Cloud Integration
+
+* Connect system to AWS / Firebase
+* Remote monitoring & analytics
+
+---
+
+### 📱 Mobile Alerts
+
+* GSM / IoT-based notifications
+* Instant alerts during emergencies
+
+---
+
+### 🗺️ Full Pipeline Digital Twin
+
+* Extend current digital twin to visualize:
+
+  * Entire pipeline network
+  * Node-wise status
+  * Real-time fault locations
+
+---
+
+## 📸 Screenshots (Add Here)
+
+* SCADA Dashboard
+* React Dashboard
 * Digital Twin View
 * Hardware Setup
-
----
-
-## 👨‍💻 Author
-
-**Poobalashree S**
-
----
-
-## ⭐ Future Improvements
-
-* Cloud integration (AWS / Firebase)
-* Mobile app alerts
-* Predictive maintenance using advanced ML models
-* GSM/GPS-based remote alert system
-
----
-
-## 📜 License
-
-This project is for educational and research purposes.
